@@ -122,3 +122,12 @@ def movie_restore_view(request, movie_id):
     if request.method == 'POST':
         movie.restore()
     return redirect('movie_trash')
+
+
+@staff_member_required
+@custom_permission_required(["movie.delete_movie"])
+def movie_hard_delete_view(request, movie_id):
+    movie = get_object_or_404(Movie.all_objects, id=movie_id, is_deleted=True)
+    if request.method == 'POST':
+        movie.hard_delete()
+    return redirect('movie_trash')
