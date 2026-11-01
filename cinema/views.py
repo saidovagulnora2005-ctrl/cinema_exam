@@ -89,3 +89,20 @@ def movie_update_view(request, movie_id):
         movie.save()
         return redirect('movie_list')
     return render(request, 'movie_update.html', {'movie': movie,'genres': genres})
+
+
+@staff_member_required
+@custom_permission_required(["movie.delete_movie"])
+def movie_delete_view(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    if request.method == 'POST':
+        movie.soft_delete()
+    return redirect('movie_list')
+
+
+def seat_list_view(request, session_id):
+    session = get_object_or_404(Session.objects.select_related('movie', 'hall'),id=session_id,movie__is_deleted=False,)
+    seats = Seat.objects.filter(hall=session.hall).order_by('row', 'number')
+    bookings = Booking.objects.filter(session=session).exclude(status='cancelled')
+    booked_seat_ids = list(bookings.values_list('seat_id', flat=True))
+    return render(request, 'seat_list.html', {'session': session,'seats': seats,'booked_seat_ids': booked_seat_ids})
