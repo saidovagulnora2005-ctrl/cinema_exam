@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Новый жанр — SG Cinema{% endblock %}
+{% block content %}<section class="form-page compact-form"><div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>КИНОТЕКА SG</div><h1>Добавить <em>жанр</em></h1><p>Новый жанр поможет зрителям быстрее найти свой фильм.</p></div><form class="panel-form" method="post">{% csrf_token %}<label>Название жанра<input type="text" name="name" maxlength="100" placeholder="Например, драма" required></label><div class="form-actions"><a class="button button-quiet" href="{% url 'genre_list' %}">Отмена</a><button class="button button-primary" type="submit">Сохранить жанр <span>→</span></button></div></form></section>{% endblock %}

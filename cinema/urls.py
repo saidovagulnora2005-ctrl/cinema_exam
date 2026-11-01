@@ -25,4 +25,7 @@ urlpatterns = [
     path('sessions/add/', session_create_view, name='session_create'),
     path('sessions/<int:session_id>/edit/',session_update_view, name='session_update'),
     path('sessions/<int:session_id>/delete/',session_delete_view, name='session_delete'),
+
+    path('bookings/', booking_list_view, name='booking_list'),
+    path('createbooking/', create_booking_view, name='createbooking'),
 ]

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Новый фильм — SG Cinema{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><span>Новый фильм</span></div>
+<section class="form-page"><div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>КИНОТЕКА SG</div><h1>Добавить <em>фильм</em></h1><p>Расскажите зрителям о новой истории на большом экране.</p></div>
+  <form class="panel-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <label>Название фильма<input type="text" name="title" maxlength="150" placeholder="Например, Город огней" required></label>
+    <label>Жанр<select name="genre" required><option value="" disabled selected>Выберите жанр</option>{% for genre in genres %}<option value="{{ genre.id }}">{{ genre.name }}</option>{% endfor %}</select></label>
+    <label>Описание<textarea name="description" rows="5" placeholder="Коротко расскажите о фильме" required></textarea></label>
+    <div class="form-columns"><label>Постер<input type="file" name="poster" accept="image/*" required><small>Вертикальное изображение хорошо смотрится в афише.</small></label><label>Трейлер <span class="field-optional">необязательно</span><input type="file" name="trailer" accept="video/*"></label></div>
+    <div class="form-actions"><a class="button button-quiet" href="{% url 'movie_list' %}">Отмена</a><button class="button button-primary" type="submit">Сохранить фильм <span>→</span></button></div>
+  </form>
+</section>
+{% endblock %}

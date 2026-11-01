@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Регистрация — SG Cinema{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><span>Регистрация</span></div>
+<section class="form-page compact-form">
+  <div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>SG CINEMA</div><h1>Создать <em>аккаунт</em></h1><p>Зарегистрируйтесь, чтобы войти на сайт.</p></div>
+  <form class="panel-form" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <label>{{ field.label }}{{ field }}
+        {% if field.help_text %}<div class="field-help">{{ field.help_text|safe }}</div>{% endif %}
+        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      </label>
+    {% endfor %}
+    {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-actions"><button class="button button-primary" type="submit">Зарегистрироваться <span>→</span></button></div>
+  </form>
+  <p class="auth-note">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,4 @@
+{% extends 'base.html' %}
+{% block title %}Брони — SG Cinema{% endblock %}
+{% block content %}<section class="simple-page"><div class="section-heading"><div>
+<div class="table-panel"><div class="admin-table admin-table-bookings"><div class="table-head"><span>Фильм и зритель</span><span>Сеанс и место</span><span>Код</span><span>Статус</span><span>Действия</span></div>{% for booking in bookings %}<div class="table-row"><div><strong>{{ booking.session.movie.title }}</strong><small>{{ booking.email }}</small></div><div><span>{{ booking.session.start_time|date:'d.m.Y · H:i' }}</span><small>{{ booking.session.hall.name }} · ряд {{ booking.seat.row }}, место {{ booking.seat.number }}</small></div><code>{{ booking.confirmation_code }}</code><span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span></div>{% empty %}<div class="empty-inline">Бронирований пока нет.</div>{% endfor %}</div></div></section>{% endblock %}

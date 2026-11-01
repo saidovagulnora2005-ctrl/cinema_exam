@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Бронирование — SG Cinema{% endblock %}
+{% block content %}<div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><span>Бронирование</span></div>
+<section class="form-page compact-form"><div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>ЕЩЁ ШАГ ДО БОЛЬШОГО ЭКРАНА</div><h1>Забронировать <em>билет</em></h1><p>{% if is_admin %}Оформление брони в панели кинотеатра.{% else %}Укажите email, чтобы получить код подтверждения.{% endif %}</p></div>
+  <form class="panel-form" method="post">{% csrf_token %}{% if error %}<div class="form-error" role="alert">{{ error }}</div>{% endif %}
+    {% if is_admin %}<label>Сеанс<select name="session" required><option value="" disabled selected>Выберите сеанс</option>{% for item in sessions %}<option value="{{ item.id }}">{{ item.movie.title }} · {{ item.start_time|date:'d.m.Y H:i' }} · {{ item.hall.name }}</option>{% endfor %}</select></label><label>Место<select name="seat" required><option value="" disabled selected>Выберите место</option>{% for item in seats %}<option value="{{ item.id }}">{{ item.hall.name }} · ряд {{ item.row }}, место {{ item.number }}</option>{% endfor %}</select></label>
+    {% else %}<div class="booking-summary"><span class="summary-kicker">ВАШ ВЫБОР</span><strong>{{ session.movie.title }}</strong><span>{{ session.start_time|date:'d.m.Y · H:i' }} · {{ session.hall.name }}</span><span>Ряд {{ seat.row }}, место {{ seat.number }}</span><b>{{ session.price }} TJS</b></div><input type="hidden" name="session_id" value="{{ session.id }}"><input type="hidden" name="seat_id" value="{{ seat.id }}">{% endif %}
+    <label>Email для подтверждения<input type="email" name="email" autocomplete="email" placeholder="name@example.com" required><small>На этот адрес придёт код подтверждения брони.</small></label>
+    <div class="form-actions"><a class="button button-quiet" href="{% if is_admin %}{% url 'booking_list' %}{% else %}{% url 'seat_list' session.id %}{% endif %}">Назад</a><button class="button button-primary" type="submit">Подтвердить бронь <span>→</span></button></div>
+  </form>
+</section>{% endblock %}

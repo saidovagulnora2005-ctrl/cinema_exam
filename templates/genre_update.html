@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Изменить жанр — SG Cinema{% endblock %}
+{% block content %}<section class="form-page compact-form"><div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>КИНОТЕКА SG</div><h1>Изменить <em>жанр</em></h1><p>Название жанра будет обновлено в афише.</p></div><form class="panel-form" method="post">{% csrf_token %}<label>Название жанра<input type="text" name="name" maxlength="100" value="{{ genre.name }}" required></label><div class="form-actions"><a class="button button-quiet" href="{% url 'genre_list' %}">Отмена</a><button class="button button-primary" type="submit">Сохранить изменения <span>→</span></button></div></form></section>{% endblock %}

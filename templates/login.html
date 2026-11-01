@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Вход — SG Cinema{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><span>Вход</span></div>
+<section class="form-page compact-form">
+  <div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>SG CINEMA</div><h1>Войти <em>в аккаунт</em></h1><p>Введите имя пользователя или email и пароль.</p></div>
+  <form class="panel-form" method="post">
+    {% csrf_token %}
+    {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
+    {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+      <label>{{ field.label }}{{ field }}
+        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      </label>
+    {% endfor %}
+    <div class="form-actions"><button class="button button-primary" type="submit">Войти <span>→</span></button></div>
+  </form>
+  <p class="auth-note">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+</section>
+{% endblock %}

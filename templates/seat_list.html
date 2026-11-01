@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Выбор места — {{ session.movie.title }}{% endblock %}
+{% block content %}<div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><a href="{% url 'movie_detail' session.movie.id %}">{{ session.movie.title }}</a><span>/</span><span>Выбор места</span></div>
+<section class="seat-page"><div class="seat-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span>{{ session.start_time|date:'d.m.Y · H:i' }} · {{ session.hall.name }}</div><h1>Выберите <em>место</em></h1><p>{{ session.movie.title }} <span class="soft-separator">·</span> {{ session.price }} TJS за билет</p></div><a class="text-link" href="{% url 'movie_detail' session.movie.id %}">← Назад к фильму</a></div>
+  <div class="seat-panel"><div class="screen-wrap"><div class="screen-glow"></div><div class="screen-bar">ЭКРАН</div><span>Пожалуйста, выберите удобное место</span></div>
+    <div class="seat-legend"><span><i class="seat-key available-key"></i>Свободно</span><span><i class="seat-key booked-key"></i>Занято</span><span><i class="seat-key selected-key"></i>Ваш выбор</span></div>
+    <div class="seat-map">{% regroup seats by row as seat_rows %}{% for row in seat_rows %}<div class="seat-row"><span class="row-number">{{ row.grouper }}</span>{% for seat in row.list %}{% if seat.id in booked_seat_ids %}<span class="seat seat-booked" aria-label="Ряд {{ seat.row }}, место {{ seat.number }} занято">{{ seat.number }}</span>{% else %}<a class="seat seat-available" href="{% url 'createbooking' %}?session_id={{ session.id }}&amp;seat_id={{ seat.id }}" aria-label="Выбрать ряд {{ seat.row }}, место {{ seat.number }}">{{ seat.number }}</a>{% endif %}{% endfor %}<span class="row-number">{{ row.grouper }}</span></div>{% empty %}<div class="empty-inline">Для этого зала ещё не добавлены места.</div>{% endfor %}</div>
+    <div class="seat-footnote"><span class="online-dot"></span>Нажмите на свободное место, чтобы продолжить</div>
+  </div>
+</section>{% endblock %}

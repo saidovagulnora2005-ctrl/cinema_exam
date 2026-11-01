@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}{% if session %}Изменить сеанс{% else %}Новый сеанс{% endif %} — SG Cinema{% endblock %}
+{% block content %}<section class="form-page compact-form"><div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>РАСПИСАНИЕ SG CINEMA</div><h1>{% if session %}Изменить <em>сеанс</em>{% else %}Новый <em>сеанс</em>{% endif %}</h1><p>Добавьте фильм в расписание выбранного зала.</p></div><form class="panel-form" method="post">{% csrf_token %}
+  <label>Фильм<select name="movie" required><option value="" disabled {% if not session %}selected{% endif %}>Выберите фильм</option>{% for movie in movies %}<option value="{{ movie.id }}" {% if session and movie.id == session.movie_id %}selected{% endif %}>{{ movie.title }}</option>{% endfor %}</select></label>
+  <label>Зал<select name="hall" required><option value="" disabled {% if not session %}selected{% endif %}>Выберите зал</option>{% for hall in halls %}<option value="{{ hall.id }}" {% if session and hall.id == session.hall_id %}selected{% endif %}>{{ hall.name }}</option>{% endfor %}</select></label>
+  <div class="form-columns"><label>Дата и время<input type="datetime-local" name="start_time" value="{% if session %}{{ session.start_time|date:'Y-m-d\TH:i' }}{% endif %}" required></label><label>Цена билета, TJS<input type="number" name="price" min="0" step="0.01" value="{% if session %}{{ session.price }}{% endif %}" placeholder="45.00" required></label></div>
+  <div class="form-actions"><a class="button button-quiet" href="{% url 'session_list' %}">Отмена</a><button class="button button-primary" type="submit">Сохранить сеанс <span>→</span></button></div>
+</form></section>{% endblock %}

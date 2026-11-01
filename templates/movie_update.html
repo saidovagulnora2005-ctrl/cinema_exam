@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Изменить {{ movie.title }} — SG Cinema{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><span>Изменить фильм</span></div>
+<section class="form-page"><div class="form-intro"><div class="eyebrow"><span class="eyebrow-line"></span>КИНОТЕКА SG</div><h1>Изменить <em>фильм</em></h1><p>Обновите информацию о фильме и его материалы.</p></div>
+  <form class="panel-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <label>Название фильма<input type="text" name="title" maxlength="150" value="{{ movie.title }}" required></label>
+    <label>Жанр<select name="genre" required>{% for genre in genres %}<option value="{{ genre.id }}" {% if genre.id == movie.genre_id %}selected{% endif %}>{{ genre.name }}</option>{% endfor %}</select></label>
+    <label>Описание<textarea name="description" rows="5" required>{{ movie.description }}</textarea></label>
+    <div class="form-columns"><label>Заменить постер{% if movie.poster %}<span class="current-artwork"><img src="{{ movie.poster.url }}" alt="Текущий постер фильма {{ movie.title }}"><span>Текущий постер<br><strong>{{ movie.title }}</strong></span></span>{% endif %}<input type="file" name="poster" accept="image/*"><small>Оставьте поле пустым, чтобы сохранить текущий постер.</small></label><label>Заменить трейлер{% if movie.trailer %}<a class="current-trailer" href="{{ movie.trailer.url }}" target="_blank" rel="noopener">▶ Открыть текущий трейлер</a>{% endif %}<input type="file" name="trailer" accept="video/*"><small>Оставьте поле пустым, чтобы сохранить текущий трейлер.</small></label></div>
+    <div class="form-actions"><a class="button button-quiet" href="{% url 'movie_detail' movie.id %}">Отмена</a><button class="button button-primary" type="submit">Сохранить изменения <span>→</span></button></div>
+  </form>
+</section>
+{% endblock %}

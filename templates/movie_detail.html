@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ movie.title }} — SG Cinema{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><span>{{ movie.title }}</span></div>
+<section class="detail-layout">
+  <div class="detail-poster-wrap">{% if movie.poster %}<img class="detail-poster" src="{{ movie.poster.url }}" alt="Постер фильма «{{ movie.title }}»">{% else %}<div class="poster-placeholder detail-poster"><span>SG</span><small>СЕГОДНЯ В КИНО</small></div>{% endif %}<span class="detail-poster-glow"></span></div>
+  <div class="detail-copy"><div class="eyebrow"><span class="eyebrow-line"></span>{{ movie.genre.name|upper }} · БОЛЬШОЙ ЭКРАН</div><h1>{{ movie.title }}</h1><p class="detail-description">{{ movie.description }}</p>
+    {% if movie.trailer %}
+      <a class="text-link trailer-link" href="#trailer">Смотреть трейлер <span>↓</span></a>
+      <section class="trailer-section" id="trailer" aria-label="Трейлер фильма {{ movie.title }}">
+        <div class="trailer-heading"><span class="eyebrow-line"></span><span>ТРЕЙЛЕР</span></div>
+        <video class="trailer-player" controls playsinline preload="metadata"{% if movie.poster %} poster="{{ movie.poster.url }}"{% endif %}>
+          <source src="{{ movie.trailer.url }}">
+          Ваш браузер не поддерживает воспроизведение видео.
+        </video>
+      </section>
+    {% endif %}
+    <div class="showtime-panel"><div class="showtime-heading"><div><div class="eyebrow">БЛИЖАЙШИЕ ПОКАЗЫ</div><h2>Выберите сеанс</h2></div><span class="showtime-spark">✦</span></div>
+      {% for session in sessions %}<div class="showtime-row"><div><strong>{{ session.start_time|date:'H:i' }}</strong><span>{{ session.start_time|date:'l, d E' }} · {{ session.hall.name }}</span></div><a class="button button-primary button-small" href="{% url 'seat_list' session.id %}">{{ session.price }} TJS <span>→</span></a></div>
+      {% empty %}<div class="empty-inline">Сеансы для этого фильма скоро появятся.</div>{% endfor %}
+    </div>
+    {% if user.is_staff %}<div class="admin-inline"><a href="{% url 'movie_update' movie.id %}">Редактировать фильм</a></div>{% endif %}
+  </div>
+</section>
+{% endblock %}

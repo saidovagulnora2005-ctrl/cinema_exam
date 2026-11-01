@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Корзина фильмов — SG Cinema{% endblock %}
+{% block content %}
+<section class="simple-page">
+  <div class="breadcrumb"><a href="{% url 'movie_list' %}">Афиша</a><span>/</span><span>Корзина</span></div>
+  <div class="section-heading">
+    <div>
+      <div class="eyebrow"><span class="eyebrow-line"></span>УДАЛЁННЫЕ ФИЛЬМЫ</div>
+      <h1>Корзина <em>фильмов</em></h1>
+    </div>
+    <a class="button button-quiet" href="{% url 'movie_list' %}">← К афише</a>
+  </div>
+  <div class="movie-grid">
+    {% for movie in movies %}
+      <article class="movie-card">
+        <div class="movie-poster-wrap">
+          {% if movie.poster %}<img class="movie-poster" src="{{ movie.poster.url }}" alt="Постер фильма «{{ movie.title }}»">
+          {% else %}<div class="poster-placeholder"><span>SG</span><small>ФИЛЬМ УДАЛЁН</small></div>{% endif %}
+          <span class="poster-tag">{{ movie.genre.name }}</span>
+        </div>
+        <div class="movie-card-info">
+          <div class="movie-title-row"><h3>{{ movie.title }}</h3></div>
+          <p>{{ movie.description|truncatechars:105 }}</p>
+          <div class="card-admin-links">
+            <form action="{% url 'movie_restore' movie.id %}" method="post">{% csrf_token %}<button type="submit">Восстановить</button></form>
+            <form action="{% url 'movie_hard_delete' movie.id %}" method="post">{% csrf_token %}<button type="submit">Удалить навсегда</button></form>
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div class="empty-state"><div class="empty-icon">✦</div><h3>Корзина пуста</h3><p>Удалённые фильмы появятся здесь.</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
