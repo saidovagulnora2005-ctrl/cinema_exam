@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm, RegistrationForm
 from django.contrib.auth.models import User
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from .models import *
 from .permissions import custom_permission_required
 from django.contrib.admin.views.decorators import staff_member_required
+from .helpers import send_confirmation_email
 
 
 def register_view(request):
@@ -210,3 +213,46 @@ def session_delete_view(request, session_id):
     if request.method == 'POST':
         session.delete()
     return redirect('session_list')
+
+
+@staff_member_required
+def booking_list_view(request):
+    bookings = Booking.objects.select_related('session__movie', 'session__hall', 'seat').order_by('-created_at')
+    return render(request, 'booking_list.html', {'bookings': bookings})
+
+
+def create_booking_view(request):
+    if request.method == 'POST':
+        session_id = request.POST.get('session_id')
+        seat_id = request.POST.get('seat_id')
+    else:
+        session_id = request.GET.get('session_id')
+        seat_id = request.GET.get('seat_id')
+    if not session_id or not seat_id:
+        return redirect('movie_list')
+    session = get_object_or_404(Session, id=session_id, movie__is_deleted=False)
+    seat = get_object_or_404(Seat,id=seat_id,hall=session.hall)
+    booking = Booking.objects.filter(session=session,seat=seat).first()
+    if booking and booking.status != 'cancelled':
+        return redirect('seat_list', session_id=session.id)
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        try:
+            validate_email(email)
+        except ValidationError:
+            return render(request, 'booking_create.html', {'session': session, 'seat': seat, 'error': 'Введите правильный email!'})
+        if booking:
+            booking.email = email
+            booking.status = 'reserved'
+            booking.confirmation_code = ''
+        else:
+            booking = Booking(session=session,seat=seat,email=email)
+        booking.save()
+        email_sent = False
+        try:
+            send_confirmation_email(booking)
+            email_sent = True
+        except Exception:
+            email_sent = False
+        return render(request, 'booking_success.html', {'booking': booking,'email_sent': email_sent})
+    return render(request, 'booking_create.html', {'session': session,'seat': seat})
