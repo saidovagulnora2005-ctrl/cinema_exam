@@ -146,3 +146,22 @@ def genre_create_view(request):
         Genre.objects.create(name=name)
         return redirect('genre_list')
     return render(request, 'genre_create.html')
+
+
+
+@staff_member_required
+def genre_update_view(request, genre_id):
+    genre = get_object_or_404(Genre, id=genre_id)
+    if request.method == 'POST':
+        genre.name = request.POST.get('name')
+        genre.save()
+        return redirect('genre_list')
+    return render(request, 'genre_update.html', {'genre': genre})
+
+
+@staff_member_required
+def genre_delete_view(request, genre_id):
+    genre = get_object_or_404(Genre, id=genre_id)
+    if request.method == 'POST':
+        genre.delete()
+    return redirect('genre_list')

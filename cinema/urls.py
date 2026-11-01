@@ -5,7 +5,7 @@ urlpatterns = [
     path('', register_view, name='register'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
-    
+
     path('movie/list', movie_list_view, name='movie_list'),
     path('movies/add/',movie_create_view, name='movie_create'),
     path('movie/detail/<int:movie_id>/', movie_detail_view, name='movie_detail'),
@@ -18,4 +18,6 @@ urlpatterns = [
 
     path('genres/', genre_list_view, name='genre_list'),
     path('genres/add/', genre_create_view, name='genre_create'),
+    path('genres/<int:genre_id>/edit/', genre_update_view, name='genre_update'),
+    path('genres/<int:genre_id>/delete/', genre_delete_view, name='genre_delete'),
 ]
