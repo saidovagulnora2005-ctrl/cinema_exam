@@ -165,3 +165,24 @@ def genre_delete_view(request, genre_id):
     if request.method == 'POST':
         genre.delete()
     return redirect('genre_list')
+
+
+@staff_member_required
+def session_list_view(request):
+    sessions = Session.objects.all().order_by('start_time')
+    return render(request, 'session_list.html', {'sessions': sessions })
+
+
+@staff_member_required
+def session_create_view(request):
+    movies = Movie.objects.all()
+    halls = Hall.objects.all()
+    if request.method == 'POST':
+        session = Session()
+        session.movie_id = request.POST.get('movie')
+        session.hall_id = request.POST.get('hall')
+        session.start_time = request.POST.get('start_time')
+        session.price = request.POST.get('price')
+        session.save()
+        return redirect('session_list')
+    return render(request, 'session_form.html', {'movies': movies,'halls': halls})

@@ -20,4 +20,7 @@ urlpatterns = [
     path('genres/add/', genre_create_view, name='genre_create'),
     path('genres/<int:genre_id>/edit/', genre_update_view, name='genre_update'),
     path('genres/<int:genre_id>/delete/', genre_delete_view, name='genre_delete'),
+
+    path('sessions/', session_list_view, name='session_list'),
+    path('sessions/add/', session_create_view, name='session_create'),
 ]
