@@ -186,3 +186,27 @@ def session_create_view(request):
         session.save()
         return redirect('session_list')
     return render(request, 'session_form.html', {'movies': movies,'halls': halls})
+
+
+
+@staff_member_required
+def session_update_view(request, session_id):
+    session = get_object_or_404(Session, id=session_id)
+    movies = Movie.objects.all()
+    halls = Hall.objects.all()
+    if request.method == 'POST':
+        session.movie_id = request.POST.get('movie')
+        session.hall_id = request.POST.get('hall')
+        session.start_time = request.POST.get('start_time')
+        session.price = request.POST.get('price')
+        session.save()
+        return redirect('session_list')
+    return render(request, 'session_form.html', {'session': session,'movies': movies,'halls': halls})
+
+
+@staff_member_required
+def session_delete_view(request, session_id):
+    session = get_object_or_404(Session, id=session_id)
+    if request.method == 'POST':
+        session.delete()
+    return redirect('session_list')
