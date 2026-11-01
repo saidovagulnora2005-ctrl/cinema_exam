@@ -3,6 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm, RegistrationForm
 from django.contrib.auth.models import User
 from .models import *
+from .permissions import custom_permission_required
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -52,3 +55,19 @@ def movie_detail_view(request, movie_id):
     movie = get_object_or_404(Movie.objects.select_related('genre'), id=movie_id)
     sessions = movie.sessions.select_related('hall').order_by('start_time')
     return render(request, 'movie_detail.html', {'movie': movie, 'sessions': sessions})
+
+
+@staff_member_required
+@custom_permission_required(["movie.add_movie"])
+def movie_create_view(request):
+    genres = Genre.objects.all()
+    if request.method == 'POST':
+        movie = Movie()
+        movie.title = request.POST.get('title')
+        movie.description = request.POST.get('description')
+        movie.genre = get_object_or_404(Genre, id=request.POST.get('genre'))
+        movie.trailer = request.FILES.get('trailer')
+        movie.poster = request.FILES.get('poster')
+        movie.save()
+        return redirect('movie_list')
+    return render(request, 'movie_create.html', {'genres': genres})
