@@ -8,4 +8,5 @@ urlpatterns = [
     path('movie/list', movie_list_view, name='movie_list'),
     path('movies/add/',movie_create_view, name='movie_create'),
     path('movie/detail/<int:movie_id>/', movie_detail_view, name='movie_detail'),
+    path('movies/<int:movie_id>/edit/', movie_update_view, name='movie_update'),
 ]

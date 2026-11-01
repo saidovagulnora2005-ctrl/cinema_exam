@@ -71,3 +71,21 @@ def movie_create_view(request):
         movie.save()
         return redirect('movie_list')
     return render(request, 'movie_create.html', {'genres': genres})
+
+
+
+@staff_member_required
+def movie_update_view(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    genres = Genre.objects.all()
+    if request.method == 'POST':
+        movie.title = request.POST.get('title')
+        movie.description = request.POST.get('description')
+        movie.genre = get_object_or_404(Genre, id=request.POST.get('genre'))
+        if request.FILES.get('poster'):
+            movie.poster = request.FILES.get('poster')
+        if request.FILES.get('trailer'):
+            movie.trailer = request.FILES.get('trailer')
+        movie.save()
+        return redirect('movie_list')
+    return render(request, 'movie_update.html', {'movie': movie,'genres': genres})
