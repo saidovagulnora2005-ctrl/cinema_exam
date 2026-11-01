@@ -131,3 +131,18 @@ def movie_hard_delete_view(request, movie_id):
     if request.method == 'POST':
         movie.hard_delete()
     return redirect('movie_trash')
+
+
+@staff_member_required
+def genre_list_view(request):
+    genres = Genre.objects.all()
+    return render(request, 'genre_list.html', {'genres': genres})
+
+
+@staff_member_required
+def genre_create_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        Genre.objects.create(name=name)
+        return redirect('genre_list')
+    return render(request, 'genre_create.html')
