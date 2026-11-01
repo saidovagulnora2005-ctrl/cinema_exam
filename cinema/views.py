@@ -106,3 +106,19 @@ def seat_list_view(request, session_id):
     bookings = Booking.objects.filter(session=session).exclude(status='cancelled')
     booked_seat_ids = list(bookings.values_list('seat_id', flat=True))
     return render(request, 'seat_list.html', {'session': session,'seats': seats,'booked_seat_ids': booked_seat_ids})
+
+
+@staff_member_required
+@custom_permission_required(["movie.restore_movie"])
+def movie_trash_view(request):
+    movies = Movie.all_objects.filter(is_deleted=True).select_related('genre')
+    return render(request, 'movie_trash.html', {'movies': movies})
+
+
+@staff_member_required
+@custom_permission_required(["movie.restore_movie"])
+def movie_restore_view(request, movie_id):
+    movie = get_object_or_404(Movie.all_objects, id=movie_id, is_deleted=True)
+    if request.method == 'POST':
+        movie.restore()
+    return redirect('movie_trash')

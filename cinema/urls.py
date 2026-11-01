@@ -11,4 +11,6 @@ urlpatterns = [
     path('movies/<int:movie_id>/edit/', movie_update_view, name='movie_update'),
     path('movies/<int:movie_id>/delete/', movie_delete_view, name='movie_delete'),
     path('sessions/<int:session_id>/seats/',seat_list_view,name='seat_list'),
+    path('movies/trash/', movie_trash_view, name='movie_trash'),
+    path('movies/<int:movie_id>/restore/', movie_restore_view, name='movie_restore'),
 ]
